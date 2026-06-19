@@ -1,24 +1,28 @@
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 import time
+from logger import Logger
 
 
 class FileMonitorHandler(FileSystemEventHandler):
     def on_created(self, event):
         if not event.is_directory:
-            print(f"[CREATED] {event.src_path}")
+            Logger.log("CREATED", event.src_path)
 
     def on_modified(self, event):
         if not event.is_directory:
-            print(f"[MODIFIED] {event.src_path}")
+            Logger.log("MODIFIED", event.src_path)
 
     def on_deleted(self, event):
         if not event.is_directory:
-            print(f"[DELETED] {event.src_path}")
+            Logger.log("DELETED", event.src_path)
 
     def on_moved(self, event):
         if not event.is_directory:
-            print(f"[MOVED] {event.src_path} -> {event.dest_path}")
+            Logger.log(
+                "MOVED",
+                f"{event.src_path} -> {event.dest_path}"
+            )
 
 
 class FileMonitor:
