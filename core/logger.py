@@ -1,4 +1,7 @@
 from datetime import datetime
+from database import Database
+
+db = Database()
 
 
 class Logger:
@@ -12,3 +15,10 @@ class Logger:
 
         with open("activity.log", "a", encoding="utf-8") as file:
             file.write(log_entry + "\n")
+
+        db.insert_event(
+            timestamp,
+            event_type,
+            details
+        )
+        
