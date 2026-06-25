@@ -1,15 +1,31 @@
+```python
 from datetime import datetime
+
 from database import Database
+from core.risk_engine import RiskEngine
 
 db = Database()
 
 
 class Logger:
+
     @staticmethod
-    def log(event_type, details):
+    def log(event_type, file_path):
+
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-        log_entry = f"[{timestamp}] [{event_type}] {details}"
+        risk_score, severity = RiskEngine.calculate_risk(
+            event_type,
+            file_path
+        )
+
+        log_entry = (
+            f"[{timestamp}] "
+            f"[{event_type}] "
+            f"[{severity}] "
+            f"[Risk:{risk_score}] "
+            f"{file_path}"
+        )
 
         print(log_entry)
 
@@ -17,8 +33,10 @@ class Logger:
             file.write(log_entry + "\n")
 
         db.insert_event(
-            timestamp,
-            event_type,
-            details
+            event_type=event_type,
+            file_path=file_path,
+            timestamp=timestamp,
+            risk_score=risk_score,
+            severity=severity
         )
-        
+```

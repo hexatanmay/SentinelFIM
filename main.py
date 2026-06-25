@@ -1,8 +1,28 @@
-from file_monitor import FileMonitor
+from watchdog.observers import Observer
+from core.watchdog_handler import SentinelHandler
 
+import time
 
-if __name__ == "__main__":
-    path = input("Folder to monitor: ")
+WATCH_PATH = "monitored"
 
-    monitor = FileMonitor(path)
-    monitor.start()
+observer = Observer()
+handler = SentinelHandler()
+
+observer.schedule(
+    handler,
+    WATCH_PATH,
+    recursive=True
+)
+
+observer.start()
+
+print(f"Monitoring: {WATCH_PATH}")
+
+try:
+    while True:
+        time.sleep(1)
+
+except KeyboardInterrupt:
+    observer.stop()
+
+observer.join()
